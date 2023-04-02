@@ -8,20 +8,17 @@ import java.io.IOException;
 public class JsonConverter {
     private static final Gson gson = new Gson();
 
-    public JsonConverter() throws IOException {
-    }
+    private JsonConverter() {}
 
     public static Order[] readOrders(String filePath) throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader(filePath));
-        Order[] orders = gson.fromJson(reader, Order[].class);
-        reader.close();
-        return orders;
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            return gson.fromJson(reader, Order[].class);
+        }
     }
 
     public static Store readStore(String filePath) throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader(filePath));
-        Store store = gson.fromJson(reader, Store.class);
-        reader.close();
-        return store;
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            return gson.fromJson(reader, Store.class);
+        }
     }
 }

@@ -1,20 +1,20 @@
 package dev.michael21official.InStoreFulfillment;
 
 import java.io.IOException;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.math.BigDecimal;
+import java.time.Duration;
+
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {
-        String ordersFilePath = "D:\\Praca\\JAVA\\Ocado internship program\\self-test-data\\advanced-allocation\\orders.json";
-        String storeFilePath = "D:\\Praca\\JAVA\\Ocado internship program\\self-test-data\\advanced-allocation\\store.json";
+        String ordersFilePath = "D:\\Praca\\JAVA\\InStoreFulfillment\\src\\main\\resources\\self-test-data\\advanced-allocation\\orders.json";
+        String storeFilePath = "D:\\Praca\\JAVA\\InStoreFulfillment\\src\\main\\resources\\self-test-data\\advanced-allocation\\store.json";
         try {
             Order[] orders = JsonConverter.readOrders(ordersFilePath);
             Store store = JsonConverter.readStore(storeFilePath);
@@ -51,29 +51,23 @@ public class Main {
                     Thread.sleep(delay);
 
                     if (time.isBefore(completeByTime) && (bestTime == null || time.isBefore(bestTime))) {
-                        bestPicker = picker;
                         bestTime = time;
+                        bestPicker = picker;
                     }
                 }
 
-                if (bestPicker != null) {
-                    System.out.println("Assigning order " + order.getOrderId() + " to picker " + bestPicker);
-                    int pickingTimeMinutes = Integer.parseInt(order.getPickingTime().substring(2, order.getPickingTime().length() - 1));
-                    pickerTimeMap.put(bestPicker, bestTime.plusMinutes(pickingTimeMinutes));
+
+
+
+                if (bestPicker == null) {
+                    System.out.println("Order " + order.getOrderId() + " could not be assigned to a picker in time.");
                 } else {
-                    System.out.println("Skipping order " + order.getOrderId() + " due to lack of available pickers");
+                    System.out.println("Order " + order.getOrderId() + " assigned to picker " + bestPicker + " to be completed by " + order.getCompleteBy());
+                    pickerTimeMap.put(bestPicker, bestTime.plus(Duration.parse(order.getPickingTime())));
                 }
             }
-
-            // Print picking schedule for each picker
-            for (Map.Entry<String, LocalTime> entry : pickerTimeMap.entrySet()) {
-                String picker = entry.getKey();
-                LocalTime time = entry.getValue();
-                System.out.println("Picker " + picker + " finished picking at " + time.format(DateTimeFormatter.ofPattern("HH:mm")));
-            }
-
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Failed to read file: " + e.getMessage());
         }
     }
 }

@@ -7,28 +7,22 @@ public class Store {
     private String pickingStartTime;
     private String pickingEndTime;
 
-    public String[] getPickers() {
-        return pickers;
+    public Store(String[] pickers, String pickingStartTime, String pickingEndTime) {
+        this.pickers = pickers;
+        this.pickingStartTime = pickingStartTime;
+        this.pickingEndTime = pickingEndTime;
     }
 
-    public void setPickers(String[] pickers) {
-        this.pickers = pickers;
+    public String[] getPickers() {
+        return pickers;
     }
 
     public String getPickingStartTime() {
         return pickingStartTime;
     }
 
-    public void setPickingStartTime(String pickingStartTime) {
-        this.pickingStartTime = pickingStartTime;
-    }
-
     public String getPickingEndTime() {
         return pickingEndTime;
-    }
-
-    public void setPickingEndTime(String pickingEndTime) {
-        this.pickingEndTime = pickingEndTime;
     }
 
     @Override
